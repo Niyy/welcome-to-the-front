@@ -44,10 +44,18 @@ public class worldController : MonoBehaviour
 
     public void aUnitWantsToEnter(GameObject terrain, Vector2 mousePosition)
     {
-        if (Vector2.Distance(terrain.transform.position, selectedUnit.transform.position) <= 1.0f)
+        //Note: can get unitPathEnd from this terrain variable
+        /*if (selectedUnit)
         {
-            selectedUnit.transform.position = terrain.transform.position;
-        }
+            if (Vector2.Distance(terrain.transform.position, selectedUnit.transform.position) <= 1.0f)
+            {
+                selectedUnit.transform.position = terrain.transform.position;
+            }
+            selectedUnit.GetComponent<unitScript>().moveVertical(terrain.transform.position);
+            selectedUnit.GetComponent<unitScript>().moveHorizontal(terrain.transform.position);
+        }*/
+
+        selectedUnit.GetComponent<unitScript>().createPath(terrain);
     }
 
 
