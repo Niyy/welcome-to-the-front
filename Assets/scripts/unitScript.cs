@@ -7,15 +7,18 @@ public class unitScript : MonoBehaviour
     public string owner;
     public bool selected;
     public GameObject unitPathEnd;
+    public float unitSpeed;
 
 
     private worldController worldController;
-    private ArrayList terrainInPath;
+    private ArrayList path;
+    private bool hasArrived;
 
 	
 	void Start ()
     {
         selected = false;
+        hasArrived = true;
         worldController = GameObject.FindGameObjectWithTag("World Controller").GetComponent<worldController>();
 	}
 	
@@ -23,6 +26,7 @@ public class unitScript : MonoBehaviour
 	void Update ()
     {
         isThisUnitBeingSelected();
+        moveAlongPath();
 	}
 
 
@@ -129,15 +133,30 @@ public class unitScript : MonoBehaviour
             if(pathFinder.collider != null)
             {
                 newPath.Add(pathFinder.transform.position);
-                Debug.Log("Part of path: " + newPath[newPath.Count - 1]);
+                Debug.Log("Part of path: " + newPath[newPath.Count - 1] + "Type: " + newPath.GetType());
             }
         }
+
+        hasArrived = false;
+        path = new ArrayList(newPath);
     }
 
 
     private void moveAlongPath()
     {
-
+        if(!hasArrived)
+        {
+            if(path.Count >= 0 && !path[0].Equals(this.transform.position))
+            {
+                transform.position = Vector2.Lerp(this.transform.position, (Vector2)path[0] , unitSpeed * Time.deltaTime);
+            }
+            else
+            {
+                path.RemoveAt(0);
+                path.TrimToSize();
+            }
+            Debug.Log("Hey folks: ");
+        }
     }
 
 
