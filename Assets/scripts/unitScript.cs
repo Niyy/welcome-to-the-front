@@ -144,15 +144,17 @@ public class unitScript : MonoBehaviour
 
     private void moveAlongPath()
     {
+        //A-star path finding
         if(!hasArrived)
         {
-            if(path.Count >= 0 && !path[0].Equals(this.transform.position))
+            if(path.Count >= 0 && Vector3.Distance(this.transform.position, (Vector3)path[0]) >= 0.0001f)
             {
                 this.transform.position = Vector2.Lerp(this.transform.position, (Vector3)path[0] , unitSpeed * Time.deltaTime);
                 Debug.Log("path: " + path[0]);
             }
-            else if (path[0].Equals(this.transform.position))
+            else
             {
+                this.transform.position = (Vector3)path[0];
                 Debug.Log("I have reached " + (Vector3)path[0]);
                 path.RemoveAt(0);
                 path.TrimToSize();
@@ -163,6 +165,8 @@ public class unitScript : MonoBehaviour
                     Debug.Log("Hi Folks");
                 }
             }
+
+            Debug.Log("Distance: " + Vector3.Distance(this.transform.position, (Vector3)path[0]));
         }
     }
 
