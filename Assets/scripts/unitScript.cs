@@ -133,7 +133,7 @@ public class unitScript : MonoBehaviour
             if(pathFinder.collider != null)
             {
                 newPath.Add(pathFinder.transform.position);
-                Debug.Log("Part of path: " + newPath[newPath.Count - 1] + "Type: " + newPath.GetType());
+                Debug.Log("Part of path: " + newPath[newPath.Count - 1] + "Type: " + newPath[newPath.Count - 1].GetType());
             }
         }
 
@@ -148,14 +148,21 @@ public class unitScript : MonoBehaviour
         {
             if(path.Count >= 0 && !path[0].Equals(this.transform.position))
             {
-                transform.position = Vector2.Lerp(this.transform.position, (Vector2)path[0] , unitSpeed * Time.deltaTime);
+                this.transform.position = Vector2.Lerp(this.transform.position, (Vector3)path[0] , unitSpeed * Time.deltaTime);
+                Debug.Log("path: " + path[0]);
             }
-            else
+            else if (path[0].Equals(this.transform.position))
             {
+                Debug.Log("I have reached " + (Vector3)path[0]);
                 path.RemoveAt(0);
                 path.TrimToSize();
+
+                if (path.Count <= 0)
+                {
+                    hasArrived = true;
+                    Debug.Log("Hi Folks");
+                }
             }
-            Debug.Log("Hey folks: ");
         }
     }
 
