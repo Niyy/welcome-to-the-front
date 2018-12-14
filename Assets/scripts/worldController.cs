@@ -7,6 +7,7 @@ public class worldController : MonoBehaviour
     public int gameBoardWidth;
     public int gameBoardHeight;
     public GameObject plainTerrainPrefab;
+    public GameObject blockedTerrainPrefab;
 
 
     private bool whoseTurn;
@@ -22,9 +23,21 @@ public class worldController : MonoBehaviour
 		for (int index = 0; index < gameBoardHeight; index++)
         {
             for (int count = 0; count < gameBoardWidth; count++)
-            {
-                Instantiate(plainTerrainPrefab, new Vector2(gameBoardWidth - centerOffSetX - index,
-                    gameBoardHeight - centerOffSetY - count), Quaternion.identity, this.transform);
+            {   
+                float rndNum = Random.Range(0, 10);
+
+                if(rndNum <= 2)
+                {
+                    GameObject newTerrain = Instantiate(blockedTerrainPrefab, new Vector2(gameBoardWidth - centerOffSetX - index,
+                        gameBoardHeight - centerOffSetY - count), Quaternion.identity, this.transform);
+                        newTerrain.GetComponent<terrainInfo>().SetTerrainType("blocked");
+                }
+                else
+                {
+                    GameObject newTerrain = Instantiate(plainTerrainPrefab, new Vector2(gameBoardWidth - centerOffSetX - index,
+                        gameBoardHeight - centerOffSetY - count), Quaternion.identity, this.transform);
+                        newTerrain.GetComponent<terrainInfo>().SetTerrainType("plain");
+                }
             }
         }
 	}

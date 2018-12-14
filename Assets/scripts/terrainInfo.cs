@@ -52,7 +52,7 @@ public class terrainInfo : MonoBehaviour
         bool combatFlag = false;
         int checkPosition = 0;
 
-        while (!combatFlag && spotsOnTerrain > checkPosition)
+        while (!combatFlag && spotsOnTerrain > checkPosition && unitsOnTerrain[checkPosition] != null)
         {
             if(!unitsOnTerrain[checkPosition].GetComponent<unitScript>().getOwner().Equals(unitOwner))
             {
@@ -93,6 +93,7 @@ public class terrainInfo : MonoBehaviour
                 if(willCombatBegin(unitTryingToEnter.GetComponent<unitScript>().getOwner())
                 && spotsOnTerrain != spotsLeftOnTerrain)
                 {
+                    unitTryingToEnter.GetComponent<unitScript>().setCombatMode(true);
                     Debug.Log("A unit of opposite owner has caused your unit to engage in combat.");
                 }
                 unitsOnTerrain[spotsOnTerrain - spotsLeftOnTerrain] = unitTryingToEnter;
@@ -107,8 +108,21 @@ public class terrainInfo : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Unit"))
         {
+            unitsOnTerrain[spotsLeftOnTerrain - 1] = null;
             spotsLeftOnTerrain++;
             Debug.Log("A unit has left this terrain block. Spots: " + spotsLeftOnTerrain);
         }
+    }
+
+
+    public void SetTerrainType(string newType)
+    {
+        terrainType = newType;
+    }
+
+
+    public string GetTerrainType()
+    {
+        return terrainType;
     }
 }

@@ -11,14 +11,19 @@ public class unitScript : MonoBehaviour
 
 
     private worldController worldController;
+    private combatController combatController;
     private ArrayList path;
     private bool hasArrived;
+    private bool combatFlag;
+    private bool engageCombat;
 
 	
 	void Start ()
     {
         selected = false;
         hasArrived = true;
+        combatFlag = false;
+        engageCombat = false;
         worldController = GameObject.FindGameObjectWithTag("World Controller").GetComponent<worldController>();
 	}
 	
@@ -27,6 +32,7 @@ public class unitScript : MonoBehaviour
     {
         isThisUnitBeingSelected();
         moveAlongPath();
+        attackEnemy();
 	}
 
 
@@ -112,11 +118,17 @@ public class unitScript : MonoBehaviour
     {
         ArrayList newPath = new ArrayList();
         Vector2 pathPostion = this.transform.position;
+        bool blocked = false;
 
         while(endTerrain.transform.position.y != pathPostion.y)
         {
             pathPostion = moveVertical(endTerrain.transform.position, pathPostion);
             RaycastHit2D pathFinder = Physics2D.Raycast(pathPostion, Vector2.up);
+
+            if(pathFinder.collider.GetComponent<terrainInfo>().GetTerrainType().Equals("blocked"))
+            {
+                blocked = true;
+            }
 
             if(pathFinder.collider != null)
             {
@@ -145,22 +157,46 @@ public class unitScript : MonoBehaviour
         //A-star path finding
         if(!hasArrived)
         {
-            if(path.Count >= 0 && Vector3.Distance(this.transform.position, (Vector3)path[0]) >= 0.0001f)
+            if(path.Count >= 0 && Vector3.Distance(this.transform.position, (Vector3)path[0]) >= 0.001f)
             {
-                this.transform.position = Vector2.Lerp(this.transform.position, (Vector3)path[0] , unitSpeed * Time.deltaTime);
+                this.transform.position = Vector2.MoveTowards(this.transform.position, (Vector3)path[0] , unitSpeed * Time.deltaTime);
             }
             else
             {
                 this.transform.position = (Vector3)path[0];
                 path.RemoveAt(0);
                 path.TrimToSize();
+                Debug.Log("I have reached a node in my path.");
+
+                /*if(!combatFlag)
+                {
+                    path.TrimToSize();
+                }
+                else
+                {
+                    path.RemoveRange(0, path.Count);
+                    engageCombat = true;
+                }*/
 
                 if (path.Count <= 0)
                 {
                     hasArrived = true;
+                    path.Clear();
                 }
             }
         }
+    }
+
+
+    private void attackEnemy()
+    {
+
+    }
+
+
+    public void setCombatMode (bool isInCombat)
+    {
+        combatFlag = isInCombat;
     }
 
 
